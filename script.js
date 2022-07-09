@@ -4,21 +4,18 @@ $(".search-btn").on("click", function () {
         url: 'http://www.omdbapi.com/?apikey=5a4f1348&s=' + $(".input-keyword").val(),
         success: results => {
 
-            const movies = results.Search; // menghilangkan search pd object
+            const movies = results.Search;
 
             let card = "";
-            movies.forEach(e => { // sama seperti while($MysqlifetchArray) pd php
+            movies.forEach(e => {
                 card += showCard(e);
             });
 
-            // let listCard = document.querySelector(".list-movie");
-            // listCard.innerHTML = card;
-
-            $(".list-movie").html(card); // sama sperti diatas namun menggunakan JQuery
+            $(".list-movie").html(card);
 
             $(".movie-detail-button").on("click", function () {
                 $.ajax({
-                    url: `http://www.omdbapi.com/?apikey=5a4f1348&i=${$(this).data("imdbid")}`, // => $(this).data("imdbid") mengambil data-imdbid
+                    url: `http://www.omdbapi.com/?apikey=5a4f1348&i=${$(this).data("imdbid")}`,
                     success: e => {
                         let movieDetail = showDetailMovie(e);
                         $(".modal-body").html(movieDetail);
@@ -31,10 +28,9 @@ $(".search-btn").on("click", function () {
     })
 });
 
-// function showCard
+// function
 function showCard(dataMovies) {
     return `<div class="col-md-4 my-3 ">
-    <!-- col-md-4 => grid = 12 untuk buat 3 kolom maka 12:3 = 4 maka col-md-4 -->
     <div class="card">
         <img src="${dataMovies.Poster}" class="card-img-top">
         <div class="card-body">
@@ -46,7 +42,6 @@ function showCard(dataMovies) {
 </div>`;
 }
 
-// function showDetailMovie
 function showDetailMovie(dataDetailMovies) {
     return `
     <div class="container-fluid">
