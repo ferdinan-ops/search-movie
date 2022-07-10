@@ -1,10 +1,9 @@
-// FETCH
 const searchBtn = document.querySelector(".search-btn");
 searchBtn.addEventListener("click", function () {
     const inputKey = document.querySelector(".input-keyword");
-    fetch("http://www.omdbapi.com/?apikey=5a4f1348&s=" + inputKey.value) // ubah nilai promise dgn then
-        .then(response => response.json()) // mengubah bentuk response yg awalnya gk jelas jd promise
-        .then(results => { // mengubah promise diatas dgn then lg. jd fungsi then menghilangkan nilai promise
+    fetch("http://www.omdbapi.com/?apikey=5a4f1348&s=" + inputKey.value)
+        .then(response => response.json())
+        .then(results => {
             const movies = results.Search;
             let card = "";
             movies.forEach(e => card += showCard(e));
@@ -27,7 +26,6 @@ searchBtn.addEventListener("click", function () {
         });
 });
 
-// function showCard
 function showCard(dataMovies) {
     return `<div class="col-md-4 my-3 ">
     <!-- col-md-4 => grid = 12 untuk buat 3 kolom maka 12:3 = 4 maka col-md-4 -->
@@ -42,7 +40,6 @@ function showCard(dataMovies) {
 </div>`;
 }
 
-// function showDetailMovie
 function showDetailMovie(dataDetailMovies) {
     return `
     <div class="container-fluid">
