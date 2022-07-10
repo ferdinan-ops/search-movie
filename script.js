@@ -1,36 +1,36 @@
-$(".search-btn").on("click", function () {
-
-    $.ajax({
-        url: 'http://www.omdbapi.com/?apikey=5a4f1348&s=' + $(".input-keyword").val(),
-        success: results => {
-
+// FETCH
+const searchBtn = document.querySelector(".search-btn");
+searchBtn.addEventListener("click", function () {
+    const inputKey = document.querySelector(".input-keyword");
+    fetch("http://www.omdbapi.com/?apikey=5a4f1348&s=" + inputKey.value) // ubah nilai promise dgn then
+        .then(response => response.json()) // mengubah bentuk response yg awalnya gk jelas jd promise
+        .then(results => { // mengubah promise diatas dgn then lg. jd fungsi then menghilangkan nilai promise
             const movies = results.Search;
-
             let card = "";
-            movies.forEach(e => {
-                card += showCard(e);
-            });
+            movies.forEach(e => card += showCard(e));
+            const listMovie = document.querySelector(".list-movie");
+            listMovie.innerHTML = card;
 
-            $(".list-movie").html(card);
-
-            $(".movie-detail-button").on("click", function () {
-                $.ajax({
-                    url: `http://www.omdbapi.com/?apikey=5a4f1348&i=${$(this).data("imdbid")}`,
-                    success: e => {
-                        let movieDetail = showDetailMovie(e);
-                        $(".modal-body").html(movieDetail);
-                    },
-                    error: err => console.log(err.responseText)
+            const detailBtn = document.querySelectorAll(".movie-detail-button");
+            detailBtn.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const imdbID = this.dataset.imdbid;
+                    fetch("http://www.omdbapi.com/?apikey=5a4f1348&i=" + imdbID)
+                        .then(response => response.json())
+                        .then(results => {
+                            let movieDetail = showDetailMovie(results);
+                            const modal = document.querySelector(".modal-body");
+                            modal.innerHTML = movieDetail;
+                        });
                 });
             });
-        },
-        error: err => console.log(err.responseText)
-    })
+        });
 });
 
-// function
+// function showCard
 function showCard(dataMovies) {
     return `<div class="col-md-4 my-3 ">
+    <!-- col-md-4 => grid = 12 untuk buat 3 kolom maka 12:3 = 4 maka col-md-4 -->
     <div class="card">
         <img src="${dataMovies.Poster}" class="card-img-top">
         <div class="card-body">
@@ -42,6 +42,7 @@ function showCard(dataMovies) {
 </div>`;
 }
 
+// function showDetailMovie
 function showDetailMovie(dataDetailMovies) {
     return `
     <div class="container-fluid">
