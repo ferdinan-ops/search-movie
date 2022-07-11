@@ -1,34 +1,45 @@
 const searchBtn = document.querySelector(".search-btn");
-searchBtn.addEventListener("click", function () {
-    const inputKey = document.querySelector(".input-keyword");
-    fetch("http://www.omdbapi.com/?apikey=5a4f1348&s=" + inputKey.value)
-        .then(response => response.json())
-        .then(results => {
-            const movies = results.Search;
-            let card = "";
-            movies.forEach(e => card += showCard(e));
-            const listMovie = document.querySelector(".list-movie");
-            listMovie.innerHTML = card;
-
-            const detailBtn = document.querySelectorAll(".movie-detail-button");
-            detailBtn.forEach(btn => {
-                btn.addEventListener("click", function () {
-                    const imdbID = this.dataset.imdbid;
-                    fetch("http://www.omdbapi.com/?apikey=5a4f1348&i=" + imdbID)
-                        .then(response => response.json())
-                        .then(results => {
-                            let movieDetail = showDetailMovie(results);
-                            const modal = document.querySelector(".modal-body");
-                            modal.innerHTML = movieDetail;
-                        });
-                });
-            });
-        });
+searchBtn.addEventListener("click", async function () {
+    const inputKeyword = document.querySelector(".input-keyword");
+    const movies = await getMovies(inputKeyword.value);
+    updateUICard(movies);
 });
+
+document.addEventListener("click", async function (e) {
+    if (e.target.classList.contains("movie-detail-button")) {
+        const imdbID = e.target.dataset.imdbid;
+        const movieDetail = await getMoviesDetail(imdbID);
+        setUIModal(movieDetail);
+    }
+})
+
+function getMovies(keyword) {
+    return fetch("http://www.omdbapi.com/?apikey=5a4f1348&s=" + keyword)
+        .then(response => response.json())
+        .then(results => results.Search);
+}
+
+function updateUICard(movies) {
+    let card = "";
+    movies.forEach(e => card += showCard(e));
+    const listMovie = document.querySelector(".list-movie");
+    listMovie.innerHTML = card;
+}
+
+function getMoviesDetail(id) {
+    return fetch("http://www.omdbapi.com/?apikey=5a4f1348&i=" + id)
+        .then(response => response.json())
+        .then(results => results);
+}
+
+function setUIModal(detail) {
+    let movieDetail = showDetailMovie(detail);
+    const modal = document.querySelector(".modal-body");
+    modal.innerHTML = movieDetail;
+}
 
 function showCard(dataMovies) {
     return `<div class="col-md-4 my-3 ">
-    <!-- col-md-4 => grid = 12 untuk buat 3 kolom maka 12:3 = 4 maka col-md-4 -->
     <div class="card">
         <img src="${dataMovies.Poster}" class="card-img-top">
         <div class="card-body">
